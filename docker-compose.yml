@@ -13,8 +13,8 @@ services:
         - python
 
   db:
-      image: mysql:5.7
-      command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      image: mysql:8.0.28
+      command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
       ports:
         - "3306:3306"
       environment:
@@ -24,9 +24,7 @@ services:
         MYSQL_PASSWORD: password
         TZ: 'Asia/Tokyo'
       volumes:
-        - ./mysql:/var/lib/mysql
-        - ./sql:/docker-entrypoint-initdb.d
-
+        - ./my.cnf:/etc/mysql/conf.d/my.cnf
   python:
       build: ./python
       command: uwsgi --socket :8001 --module app.wsgi --py-autoreload 1 --logto /tmp/mylog.log
