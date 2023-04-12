@@ -37,3 +37,12 @@ services:
         - "8001"
       depends_on:
         - db
+  # front:
+  #   build:
+  #     context: ./front
+  #   command: 'sh /app/start.sh'
+  #   volumes:
+  #     - ./front:/app/:cached
+  #     - ./front/node_modules:/app/node_modules
+  #   ports:
+  #     - "8080:8080"
