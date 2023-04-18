@@ -9,6 +9,8 @@ services:
         - ./nginx/conf:/etc/nginx/conf.d
         - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
         - ./static:/static
+      networks:
+        - django_net
       depends_on:
         - python
 
@@ -25,6 +27,8 @@ services:
         TZ: 'Asia/Tokyo'
       volumes:
         - ./my.cnf:/etc/mysql/conf.d/my.cnf
+      networks:
+        - django_net
   python:
       build: ./python
       command: uwsgi --socket :8001 --module app.wsgi --py-autoreload 1 --logto /tmp/mylog.log
@@ -33,14 +37,24 @@ services:
         - ./static:/static
       expose:
         - "8001"
+      networks:
+        - django_net
       depends_on:
         - db
-  # front:
-  #   build:
-  #     context: ./front
-  #   command: 'sh /app/start.sh'
-  #   volumes:
-  #     - ./front:/app/:cached
-  #     - ./front/node_modules:/app/node_modules
-  #   ports:
-  #     - "8080:8080"
+    # front:
+    #   build:
+    #     context: ./front
+    #   command: 'sh /app/start.sh'
+    #   volumes:
+    #     - ./src:/app/:cached
+    #     - ./src/node_modules:/app/node_modules
+    #   ports:
+    #     - "8080:8080"
+    #   networks:
+    #     - django_net
+    #   depends_on:
+    #     - python
+
+networks:
+  django_net:
+    driver: bridge
